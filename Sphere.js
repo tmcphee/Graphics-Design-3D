@@ -142,8 +142,8 @@ class Sphere{
         gl.vertexAttribPointer(vpos, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vpos);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
-        var fColorLocation = gl.getUniformLocation(shaderProgram, "fColor");
-        gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
+        //var fColorLocation = gl.getUniformLocation(shaderProgram, "fColor");
+        //gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
 
         // Set the view port
         gl.viewport(0, 0, canvas.width, canvas.height);

@@ -11,16 +11,17 @@ function main() {
     //Initialise vertex shader
     var vs =
       'attribute vec3 vposition;'
+      +'varying lowp vec4 vColor;'
       + 'void main(){'
       + '  gl_Position = vec4(vposition, 1.0);'
+      +'vColor = vec4(vposition, 1.0);'
       + '}';
     //initialise fragment shader
     var fs =
       'precision mediump float;' +
-      'uniform vec4 fColor;' +
+      'varying lowp vec4 vColor;'+
       ' void main(){' +
-      '' +
-      ' gl_FragColor = fColor;'
+      ' gl_FragColor = vColor;'
       + '}'
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);
