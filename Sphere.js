@@ -31,7 +31,7 @@ class Sphere{
     generate() {
     // Initialization
         var vertices, indices;
-        var SPHERE_DIV = 12;
+        var SPHERE_DIV = 36;
         var i, ai, si, ci;
         var j, aj, sj, cj;
         var p1, p2;
@@ -50,6 +50,7 @@ class Sphere{
             vertices.push(si * sj);  // X
             vertices.push(cj);       // Y
             vertices.push(ci * sj);  // Z
+            
           }
         }
         this.vertices = new Float32Array(vertices);
