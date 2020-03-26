@@ -65,7 +65,7 @@ class Sphere{
         for (var i = 0; i < points.length; i += 3) {
             vertices.push(this.x + points[i] * this.radius);            // X
             vertices.push(this.y + points[i+1] * this.radius);          // Y
-            vertices.push(-this.z + points[i+2] * this.radius);          // Z
+            vertices.push(this.z + points[i+2] * this.radius);          // Z
         }
         this.vertices = new Float32Array(vertices);
   
@@ -206,7 +206,6 @@ class Sphere{
         this.vbo = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
         //Generate a new index buffer and give it our indices
         this.indexbuffer = gl.createBuffer();
@@ -230,9 +229,6 @@ class Sphere{
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
         var fColorLocation = gl.getUniformLocation(shaderProgram, "fColor");
         gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
-
-        // Set the view port
-        gl.viewport(0, 0, canvas.width, canvas.height);
 
         //Draw the triangle
         gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);

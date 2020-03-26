@@ -1,5 +1,5 @@
-var near = -1;
-var far = 1;
+var near = -10;
+var far = 10;
 var radius = 1;
 var theta  = 0.0;
 var phi    = 0.0;
@@ -35,7 +35,7 @@ function main() {
       +'uniform mat4 modelViewMatrix;'
       +'varying lowp vec4 vColor;'
       + 'void main(){'
-      + '  gl_Position = modelViewMatrix * vec4(vposition, 1.0);'
+      + '  gl_Position = projectionMatrix * modelViewMatrix * vec4(vposition, 1.0);'
       +'vColor = vec4(vposition, 1.0);'
       + '}';
 
@@ -65,7 +65,6 @@ function main() {
     gl.linkProgram(program);
     gl.useProgram(program)
     gl.clearColor(0.0, 0.5, 0.0, 1.0);
-    gl.depthFunc(gl.LESS);
 
     //Function to create a shader from input text
     function createShader(gl, sourceCode, type) {
@@ -113,7 +112,6 @@ function main() {
     var xEnd = 0;
     var yEnd = 0;
     var axis = [0,0,0]
-    console.log(axis)
 
     canvas.addEventListener("mousedown", function(event){
       xStart = 2*event.clientX/canvas.width-1;
@@ -155,7 +153,7 @@ function main() {
         radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
       
       if (axis[0] || axis[1] || axis[2]) {
-        modelViewMatrix = mult(modelViewMatrix, rotate(0.3, axis))//lookAt( eye, at, up );
+        modelViewMatrix = mult(modelViewMatrix, rotate(0.3, axis))
       }
       projectionMatrix = ortho(left, right, bottom, ytop, near, far);
 
