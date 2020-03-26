@@ -33,20 +33,24 @@ function main() {
       'attribute vec3 vposition;'
       +'uniform mat4 projectionMatrix;'
       +'uniform mat4 modelViewMatrix;'
-      +'varying lowp vec4 vColor;'
+      +'varying vec3 FragPos;'
+      +'varying vec3 Normal;'
       + 'void main(){'
       + '  gl_Position = projectionMatrix * modelViewMatrix * vec4(vposition, 1.0);'
-      +'vColor = vec4(vposition, 1.0);'
+      + '  FragPos = vec3(modelViewMatrix * vec4(vposition, 1.0));'
       + '}';
 
     //initialise fragment shader
     var fs =
     'precision mediump float;' +
+    'varying vec3 FragPos;'+
+    'varying vec3 Normal;'+
     'uniform vec4 fColor;' +
     ' void main(){' +
-    '' +
-    ' gl_FragColor = fColor;'
-    + '}'
+    '   float ambientStrength = 0.1;' +
+    '   vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);'+
+    '   gl_FragColor = vec4(ambient, 1.0) * fColor;'+
+    '}'
 
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);

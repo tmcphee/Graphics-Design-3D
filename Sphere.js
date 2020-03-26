@@ -43,7 +43,7 @@ class Sphere{
         this.vertices = [];
         this.indices = [];
         this.numIndices = 0;
-        this.colour = [x, y, z];
+        this.colour = [x + 0.1, y + 0.1, z + 0.1];
         this.complete = false;
         this.poison = false;
         //Generate points of the sphere
