@@ -136,6 +136,25 @@ function main() {
       }
       return v;
     }
+
+    function CalculateSurfaceNormal(X1, X2, X3, Y1, Y2, Y3, Z1, Z2, Z3){
+      var U = [x, y, z];
+      U.x = (X2 - X1);
+      U.y = (Y2 - Y1);
+      U.z = (Z2 - Z1);
+
+      var V = [x, y, z];
+      V.x = (X3 - X1);
+      V.y = (Y3 - Y1);
+      V.z = (Z3 - Z1);
+
+      var Normal = [x, y, z];
+      Normal.x = (U.y * V.z) - (U.z * V.y);
+      Normal.y = (U.z * V.x) - (U.x * V.z);
+      Normal.z = (U.x * V.y) - (U.y * V.x);
+
+      return Normal;
+    }
     
     
     function mouseMotion( x,  y)
