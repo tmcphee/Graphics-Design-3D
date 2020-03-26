@@ -149,7 +149,7 @@ class Sphere{
             while ((rand % 3) != 0) {
                 rand--;
             }
-        return [this.vertices[rand], this.vertices[rand + 1]];
+            return [this.vertices[rand], this.vertices[rand + 1], this.vertices[rand + 2]];
     }
 
     setx(x) {
