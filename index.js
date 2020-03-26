@@ -87,7 +87,6 @@ function main() {
     var spheres = [new Sphere(0, 0, 0, 0.6, program, gl), new Sphere(0,0.6,0,0.2,program,gl),new Sphere(0.6,0,0,0.2,program,gl), new Sphere(0,0,0.6,0.2,program,gl)];
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    console.log(spheres[0].getVertices())
 
     modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
@@ -111,36 +110,42 @@ function main() {
     var yStart = 0;
     var xEnd = 0;
     var yEnd = 0;
-    var axis = [0,0,0]
+    var zStart = 0;
+    var zEnd = 0;
+    var axis = [0,0,0];
 
     canvas.addEventListener("mousedown", function(event){
       xStart = 2*event.clientX/canvas.width-1;
       yStart = 2*(canvas.height-event.clientY)/canvas.height-1;
+      var d = xStart * xStart + yStart * yStart;
+      if (d < 1)
+        zStart = Math.sqrt(1 - zStart);
+      else {
+        zStart = 0;
+        var a = 1 / Math.sqrt(d);
+        xStart *= a;
+        yStart *- a;
+      }
     }); 
 
     canvas.addEventListener('mouseup', function(event) {
       xEnd = 2*event.clientX/canvas.width-1;
       yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
+      d = xEnd * xEnd + yEnd * yEnd;
+      if (d < 1)
+        zEnd = Math.sqrt(1 - zEnd);
+      else {
+        zEnd = 0;
+        var a = 1 / Math.sqrt(d);
+        xEnd *= a;
+        xEnd *- a;
+      }
       stopMotion();
     }); 
 
     function stopMotion() {
-      if (xStart > xEnd + 0.1) {
-        console.log("swiped left");
-        axis[1] = -1
-      }
-      if (xStart + 0.1 < xEnd) {
-        console.log("swiped right");
-        axis[1] = 1
-      }
-      if (yStart > yEnd + 0.1) {
-        console.log("swiped down");
-        axis[0] = 1
-      }
-      if (yStart + 0.1 < yEnd) {
-        console.log("swiped up");
-        axis[0] = -1
-      }
+      console.log("here")
+      axis = normalize([yStart * zEnd - zStart * yEnd, zStart * xEnd - xStart * zEnd, xStart * yEnd - yStart * xEnd])
     }
 
     console.log(axis)

@@ -21,7 +21,6 @@ function getPoints() {
             }
           }
     }
-    console.log("here2")
     return points
 }
 
@@ -91,7 +90,6 @@ class Sphere{
             this.normals.push(norm[0]);
             this.normals.push(norm[1]);
             this.normals.push(norm[2]);
-            console.log("x: " + norm[0] + " y: " + norm[1] + " z: " + norm[2]);
         }
         this.indices = new Uint16Array(indices);
     }
