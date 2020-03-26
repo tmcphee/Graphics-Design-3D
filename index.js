@@ -89,6 +89,14 @@ function main() {
     
     //Create Spheres
     var spheres = [new Sphere(0, 0, 0, 0.6, program, gl), new Sphere(0,0.6,0,0.1,program,gl),new Sphere(0.6,0,0,0.1,program,gl), new Sphere(0,0,0.6,0.1,program,gl)];
+    spheres[0].setPetri();
+    spheres[1].setPetri();
+    spheres[2].setPetri();
+    spheres[3].setPetri();
+    
+    
+    
+    
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 

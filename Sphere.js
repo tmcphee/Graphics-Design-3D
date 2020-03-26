@@ -180,6 +180,10 @@ class Sphere{
     setComplete(complete) {
         this.complete = complete
     }
+    setPetri() {
+        this.petri = true;
+        this.colour = [1, 0.85, 1, 1]
+    }
 
     getx() {
         return this.x;
@@ -204,6 +208,9 @@ class Sphere{
     }
     getPoison() { 
         return this.poison
+    }
+    getPetri() {
+        return this.petri;
     }
 
     genBuffers(gl) {

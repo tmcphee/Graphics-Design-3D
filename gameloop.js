@@ -29,7 +29,7 @@ function myScale(circles, gl, speed) {
         return circles;
     origin = circles.shift(1);
     circles.map(x => {
-        if (x.getRadius() < 0.4) {
+        if (x.getRadius() < 0.4 && !x.getPetri()) {
             vertices = x.getVertices()
             for (var i = 0; i < vertices.length; i += 3) {
                 vertices[i] = ((vertices[i] - x.getx()) * speed) + x.getx();
