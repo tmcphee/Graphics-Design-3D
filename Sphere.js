@@ -1,5 +1,6 @@
 var PI = 3.14;
 var points = []
+
 function getPoints() {
     if (points.length == 0) {
         var SPHERE_DIV = 36
@@ -83,8 +84,32 @@ class Sphere{
             indices.push(p2 + 1);
           }
         }
+
+        //Calculate Normals
+        for (var i = 0; i < vertices.length; i+=9){
+            var norm = this.CalculateSurfaceNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2], vertices[i + 3], vertices[i + 4], vertices[i + 5], vertices[i + 6], vertices[i + 7], vertices[i + 8]);
+            this.normals.push(norm[0]);
+            this.normals.push(norm[1]);
+            this.normals.push(norm[2]);
+            console.log("x: " + norm[0] + " y: " + norm[1] + " z: " + norm[2]);
+        }
         this.indices = new Uint16Array(indices);
     }
+    //Calculate normals of triangle
+    CalculateSurfaceNormal(X1, X2, X3, Y1, Y2, Y3, Z1, Z2, Z3){
+        var U = [];
+        U[0] = (X2 - X1);
+        U[1] = (Y2 - Y1);
+        U[2] = (Z2 - Z1);
+  
+        var V = [];
+        V[0] = (X3 - X1);
+        V[1] = (Y3 - Y1);
+        V[2]= (Z3 - Z1);
+  
+        var Normal = [(U[1] * V[2]) - (U[2] * V[1]), (U[2] * V[0]) - (U[0] * V[2]), (U[0] * V[1]) - (U[1] * V[0])];
+        return Normal;
+      }
 
     collision(sphere){
         var d = Math.sqrt(Math.pow((this.x - sphere.x), 2) + 
