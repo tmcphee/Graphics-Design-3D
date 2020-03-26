@@ -1,4 +1,28 @@
 var PI = 3.14;
+var points = []
+function getPoints() {
+    if (points.length == 0) {
+        var SPHERE_DIV = 36
+        console.log("here")
+        for (var j = 0; j <= SPHERE_DIV; j++) {
+            aj = j * Math.PI / SPHERE_DIV;
+            sj = Math.sin(aj);
+            cj = Math.cos(aj);
+            for (var i = 0; i <= SPHERE_DIV; i++) {
+              ai = i * 2 * Math.PI / SPHERE_DIV;
+              si = Math.sin(ai);
+              ci = Math.cos(ai);
+    
+              points.push(si * sj);  // X
+              points.push(cj);       // Y
+              points.push(ci * sj);  // Z
+              
+            }
+          }
+    }
+    console.log("here2")
+    return points
+}
 
 class Sphere{
     constructor(x, y, z, radius, shader, gl) {
@@ -32,33 +56,21 @@ class Sphere{
     generate() {
     // Initialization
         var vertices, indices;
-        var SPHERE_DIV = 72;
-        var i, ai, si, ci;
-        var j, aj, sj, cj;
+        var SPHERE_DIV = 36;
         var p1, p2;
   
         // Vertices
-        var vertices = [], indices = [];
-        for (j = 0; j <= SPHERE_DIV; j++) {
-          aj = j * Math.PI / SPHERE_DIV;
-          sj = Math.sin(aj);
-          cj = Math.cos(aj);
-          for (i = 0; i <= SPHERE_DIV; i++) {
-            ai = i * 2 * Math.PI / SPHERE_DIV;
-            si = Math.sin(ai);
-            ci = Math.cos(ai);
-  
-            vertices.push(this.x + si * sj * this.radius);  // X
-            vertices.push(this.y + cj * this.radius);       // Y
-            vertices.push(this.z + ci * sj * this.radius);  // Z
-            
-          }
+        var vertices = [], indices = [], points = getPoints();
+        for (var i = 0; i < points.length; i += 3) {
+            vertices.push(this.x + points[i] * this.radius);            // X
+            vertices.push(this.y + points[i+1] * this.radius);          // Y
+            vertices.push(this.z + points[i+2] * this.radius);          // Z
         }
         this.vertices = new Float32Array(vertices);
   
         // Indices
-        for (j = 0; j < SPHERE_DIV; j++) {
-          for (i = 0; i < SPHERE_DIV; i++) {
+        for (var j = 0; j < SPHERE_DIV; j++) {
+          for (var i = 0; i < SPHERE_DIV; i++) {
             p1 = j * (SPHERE_DIV+1) + i;
             p2 = p1 + (SPHERE_DIV+1);
   

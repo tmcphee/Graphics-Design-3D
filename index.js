@@ -102,9 +102,9 @@ function main() {
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
     spheres[1].draw(canvas);
-    spheres[0].draw(canvas);
     spheres[2].draw(canvas);
     spheres[3].draw(canvas);
+    spheres[0].draw(canvas);
     window.requestAnimationFrame(animate);
 
     function animate(time) {
@@ -121,7 +121,7 @@ function main() {
       spheres[0].draw(canvas);
       spheres[1].draw(canvas);
       spheres[2].draw(canvas);
-      spheres[3].draw(canvas)
+      spheres[3].draw(canvas);
       window.requestAnimationFrame(animate);
     }
 
