@@ -94,9 +94,6 @@ function main() {
     spheres[2].setPetri();
     spheres[3].setPetri();
     
-    
-    
-    
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -166,6 +163,7 @@ function main() {
 
     function animate(time) {
       var c = gameloop(spheres, program, gl);
+      console.log(c)
       if (c != null && !(spheres.map(x => x.collision(c)).includes(true))) {
         spheres[spheres.length] = c;
       }

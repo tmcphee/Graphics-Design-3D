@@ -2,7 +2,7 @@ function gameloop(sphere, shader, gl) {
     if (Math.floor(Math.random() * 100) < 3) {
         var temp = sphere[0].getRandomPoint();
         if (sphere.length < 12)
-            return (new Sphere(parseFloat(temp[0]), parseFloat(temp[1]), parseFloat(temp[3]), 0.05, shader, gl));
+            return (new Sphere(parseFloat(temp[0]), parseFloat(temp[1]), parseFloat(temp[2]), 0.05, shader, gl));
     }
     return null;
 }
