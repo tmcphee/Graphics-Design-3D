@@ -163,7 +163,7 @@ function main() {
         spheres[spheres.length] = c;
       }
 
-      spheres = scale(spheres, gl, 1.003)
+      //spheres = scale(spheres, gl, 1.003)
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       spheres[0].draw(canvas);
