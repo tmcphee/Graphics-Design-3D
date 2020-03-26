@@ -113,7 +113,7 @@ function main() {
     var zStart = 0;
     var zEnd = 0;
     var angle = 0;
-    var axis = [0,0,0];
+    var axis = [0,0,1];
 
     canvas.addEventListener("mousedown", function(event){
       xStart = 2*event.clientX/canvas.width-1;
@@ -125,7 +125,7 @@ function main() {
         zStart = 0.0;
         var a = 1.0 / Math.sqrt(d);
         xStart *= a;
-        yStart *- a;
+        yStart *= a;
       }
     }); 
 
@@ -134,20 +134,20 @@ function main() {
       yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
       d = (xEnd * xEnd) + (yEnd * yEnd);
       if (d < 1.0)
-        zEnd = Math.sqrt(1 - d);
+        zEnd = Math.sqrt(1.0 - d);
       else {
         zEnd = 0.0;
         var a = 1.0 / Math.sqrt(d);
         xEnd *= a;
-        xEnd *- a;
+        yEnd *= a;
       }
       stopMotion();
     }); 
 
     function stopMotion() {
       console.log("here")
-      angle = 0.3//-0.1 * Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
-      axis = normalize([(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)])
+      angle = 0.8//Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
+      axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)]
     }
 
     console.log(axis)
