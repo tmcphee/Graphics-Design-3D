@@ -9,7 +9,7 @@ class Sphere{
         this.y = y;
         this.z = z;
         this.gl = gl;
-        this.Radius = radius;
+        this.radius = radius;
         this.shaderProgram = shader;
         this.vbo;
         this.petri = false;
@@ -47,9 +47,9 @@ class Sphere{
             si = Math.sin(ai);
             ci = Math.cos(ai);
   
-            vertices.push(si * sj);  // X
-            vertices.push(cj);       // Y
-            vertices.push(ci * sj);  // Z
+            vertices.push(si * sj * this.radius);  // X
+            vertices.push(cj * this.radius);       // Y
+            vertices.push(ci * sj * this.radius);  // Z
             
           }
         }
@@ -83,7 +83,7 @@ class Sphere{
         this.z = z;
     }
     setRadius(radius) {
-        this.Radius = radius;
+        this.radius = radius;
     }
     setShader(shader) {
         this.Shader = shader;
@@ -103,7 +103,7 @@ class Sphere{
         return this.z;
     }
     getRadius() {
-        return this.Radius;
+        return this.radius;
     }
     getShader() {
         return this.Shader;
