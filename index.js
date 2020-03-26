@@ -15,6 +15,16 @@ var eye;
 const at = vec3(0.0, 0.0, 0.0);
 const up = vec3(0.0, 1.0, 0.0);
 
+var  angle = 0.0;
+var  axis = [0, 0, 1];
+
+var 	trackingMouse = false;
+var   trackballMove = false;
+
+var lastPos = [0, 0, 0];
+var curx, cury;
+var startX, startY;
+
 function main() {
     var score = 0;
 
@@ -105,15 +115,108 @@ function main() {
     spheres[2].draw(canvas);
     spheres[3].draw(canvas);
     spheres[0].draw(canvas);
+
+    function trackballView( x,  y ) {
+      var d, a;
+      var v = [];
+    
+      v[0] = x;
+      v[1] = y;
+    
+      d = v[0]*v[0] + v[1]*v[1];
+      if (d < 1.0)
+        v[2] = Math.sqrt(1.0 - d);
+      else {
+        v[2] = 0.0;
+        a = 1.0 /  Math.sqrt(d);
+        v[0] *= a;
+        v[1] *= a;
+      }
+      return v;
+    }
+    
+    
+    function mouseMotion( x,  y)
+    {
+        var dx, dy, dz;
+    
+        var curPos = trackballView(x, y);
+        if(trackingMouse) {
+          dx = curPos[0] - lastPos[0];
+          dy = curPos[1] - lastPos[1];
+          dz = curPos[2] - lastPos[2];
+    
+          if (dx || dy || dz) {
+             angle = -0.1 * Math.sqrt(dx*dx + dy*dy + dz*dz);
+    
+    
+             axis[0] = lastPos[1]*curPos[2] - lastPos[2]*curPos[1];
+             axis[1] = lastPos[2]*curPos[0] - lastPos[0]*curPos[2];
+             axis[2] = lastPos[0]*curPos[1] - lastPos[1]*curPos[0];
+    
+             lastPos[0] = curPos[0];
+             lastPos[1] = curPos[1];
+             lastPos[2] = curPos[2];
+          }
+        }
+        animate();
+    }
+    
+    function startMotion( x,  y)
+    {
+        trackingMouse = true;
+        startX = x;
+        startY = y;
+        curx = x;
+        cury = y;
+    
+        lastPos = trackballView(x, y);
+        trackballMove=true;
+    }
+    
+    function stopMotion( x,  y)
+    {
+        trackingMouse = false;
+        if (startX != x || startY != y) {
+        }
+        else {
+           angle = 0.0;
+           trackballMove = false;
+        }
+    }
+    
+
+    canvas.addEventListener("mousedown", function(event){
+      var x = 2*event.clientX/canvas.width-1;
+      var y = 2*(canvas.height-event.clientY)/canvas.height-1;
+      startMotion(x, y);
+    });
+
+    canvas.addEventListener("mouseup", function(event){
+      var x = 2*event.clientX/canvas.width-1;
+      var y = 2*(canvas.height-event.clientY)/canvas.height-1;
+      stopMotion(x, y);
+    });
+
+    canvas.addEventListener("mousemove", function(event){
+
+      var x = 2*event.clientX/canvas.width-1;
+      var y = 2*(canvas.height-event.clientY)/canvas.height-1;
+      mouseMotion(x, y);
+    } );
     window.requestAnimationFrame(animate);
 
     function animate(time) {
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      theta = theta + 0.01
-      eye = vec3(radius*Math.sin(theta)*Math.cos(phi), 
-        radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
 
-      modelViewMatrix = lookAt( eye, at, up );//mult(modelViewMatrix, rotate(0.3, [1,0,0]))
+      if(trackballMove) {
+        axis = normalize(axis);
+        modelViewMatrix = mult(modelViewMatrix, rotate(angle, axis));
+      }
+      // eye = vec3(radius*Math.sin(theta)*Math.cos(phi), 
+      //   radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
+
+      // modelViewMatrix = lookAt( eye, at, up );//mult(modelViewMatrix, rotate(0.3, [1,0,0]))
       projectionMatrix = ortho(left, right, bottom, ytop, near, far);
 
       gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
