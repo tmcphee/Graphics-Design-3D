@@ -51,11 +51,12 @@ function main() {
 
     //initialise fragment shader
     var fs =
-      'precision mediump float;' +
-      'varying lowp vec4 vColor;'+
-      ' void main(){' +
-      ' gl_FragColor = vColor;'
-      + '}'
+    'precision mediump float;' +
+    'uniform vec4 fColor;' +
+    ' void main(){' +
+    '' +
+    ' gl_FragColor = fColor;'
+    + '}'
 
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);
