@@ -2,7 +2,7 @@ var PI = 3.14;
 var points = []
 function getPoints() {
     if (points.length == 0) {
-        var SPHERE_DIV = 36
+        var SPHERE_DIV = 72
         console.log("here")
         for (var j = 0; j <= SPHERE_DIV; j++) {
             aj = j * Math.PI / SPHERE_DIV;
@@ -56,7 +56,7 @@ class Sphere{
     generate() {
     // Initialization
         var vertices, indices;
-        var SPHERE_DIV = 36;
+        var SPHERE_DIV = 72;
         var p1, p2;
   
         // Vertices
@@ -64,7 +64,7 @@ class Sphere{
         for (var i = 0; i < points.length; i += 3) {
             vertices.push(this.x + points[i] * this.radius);            // X
             vertices.push(this.y + points[i+1] * this.radius);          // Y
-            vertices.push(this.z + points[i+2] * this.radius);          // Z
+            vertices.push(-this.z + points[i+2] * this.radius);          // Z
         }
         this.vertices = new Float32Array(vertices);
   
