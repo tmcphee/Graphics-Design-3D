@@ -116,40 +116,42 @@ function main() {
     var yEnd = 0;
     var zStart = 0;
     var zEnd = 0;
-    var axis = [0,0,0];
+    var angle = 0;
+    var axis = [0,0,1];
 
     canvas.addEventListener("mousedown", function(event){
       xStart = 2*event.clientX/canvas.width-1;
       yStart = 2*(canvas.height-event.clientY)/canvas.height-1;
-      var d = xStart * xStart + yStart * yStart;
-      if (d < 1)
-        zStart = Math.sqrt(1 - zStart);
+      var d = (xStart * xStart) + (yStart * yStart);
+      if (d < 1.0)
+        zStart = Math.sqrt(1.0 - d);
       else {
-        zStart = 0;
-        var a = 1 / Math.sqrt(d);
+        zStart = 0.0;
+        var a = 1.0 / Math.sqrt(d);
         xStart *= a;
-        yStart *- a;
+        yStart *= a;
       }
     }); 
 
     canvas.addEventListener('mouseup', function(event) {
       xEnd = 2*event.clientX/canvas.width-1;
       yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
-      d = xEnd * xEnd + yEnd * yEnd;
-      if (d < 1)
-        zEnd = Math.sqrt(1 - zEnd);
+      d = (xEnd * xEnd) + (yEnd * yEnd);
+      if (d < 1.0)
+        zEnd = Math.sqrt(1.0 - d);
       else {
-        zEnd = 0;
-        var a = 1 / Math.sqrt(d);
+        zEnd = 0.0;
+        var a = 1.0 / Math.sqrt(d);
         xEnd *= a;
-        xEnd *- a;
+        yEnd *= a;
       }
       stopMotion();
     }); 
 
     function stopMotion() {
       console.log("here")
-      axis = normalize([yStart * zEnd - zStart * yEnd, zStart * xEnd - xStart * zEnd, xStart * yEnd - yStart * xEnd])
+      angle = 0.8//Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
+      axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)]
     }
 
     console.log(axis)
@@ -162,7 +164,7 @@ function main() {
         radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
       
       if (axis[0] || axis[1] || axis[2]) {
-        modelViewMatrix = mult(modelViewMatrix, rotate(0.3, axis))
+        modelViewMatrix = mult(modelViewMatrix, rotate(angle, axis))
       }
       projectionMatrix = ortho(left, right, bottom, ytop, near, far);
 
