@@ -126,17 +126,17 @@ class Sphere{
         return false;
     }
 
-    absorb(circle, gl) {
-        var a1 = ((this.getRadius() * this.getRadius()) * 3.14)
-        var a2 = (((circle.getRadius() * circle.getRadius()) * 3.14) / 5)
-        var newRadius = Math.sqrt(((a1 + a2) / 3.14))
-        if (newRadius > 0.3)
-            newRadius = 0.3
-        this.setRadius(newRadius) 
-        this.generate()
-        this.genBuffers(gl)
-        return this;
-    }
+    // absorb(circle, gl) {
+    //     var a1 = ((this.getRadius() * this.getRadius() * this.getRadius) * PI * (4/3))
+    //     var a2 = ((circle.getRadius() * circle.getRadius() * this.getRadius) * PI * (4/3))
+    //     var newRadius = Math.cbrt(((a1 + a2) / 3.14 * (4/3)))
+    //     if (newRadius > 0.3)
+    //         newRadius = 0.3
+    //     this.setRadius(newRadius) 
+    //     this.generate()
+    //     this.genBuffers(gl)
+    //     return this;
+    // }
 
     getRandomPoint() {
         var rand = Math.floor(Math.random() * (this.vertices.length));

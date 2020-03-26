@@ -1,8 +1,24 @@
 function gameloop(sphere, shader, gl) {
-    if (Math.floor(Math.random() * 100) < 3) {
+    if (Math.floor(Math.random() * 1000) < 3) {
         var temp = sphere[0].getRandomPoint();
-        if (sphere.length < 12)
-            return (new Sphere(parseFloat(temp[0]), parseFloat(temp[1]), parseFloat(temp[2]), 0.05, shader, gl));
+        if (sphere.length < 12) {
+            var x = parseFloat(temp[0])
+            var y = parseFloat(temp[1])
+            var z = parseFloat(temp[2])
+            if (x < 0)
+                x += 0.05
+            else
+                x -= 0.05
+            if (y < 0)
+                y += 0.05
+            else
+                y -= 0.05
+            if (z < 0)
+                z += 0.05
+            else
+                z -= 0.05
+        }
+            return (new Sphere(x,y,z, 0.05, shader, gl));
     }
     return null;
 }
@@ -29,7 +45,7 @@ function myScale(circles, gl, speed) {
         return circles;
     origin = circles.shift(1);
     circles.map(x => {
-        if (x.getRadius() < 0.4 && !x.getPetri()) {
+        if (x.getRadius() < 0.3 && !x.getPetri()) {
             vertices = x.getVertices()
             for (var i = 0; i < vertices.length; i += 3) {
                 vertices[i] = ((vertices[i] - x.getx()) * speed) + x.getx();
