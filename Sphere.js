@@ -73,6 +73,49 @@ class Sphere{
         this.indices = new Uint16Array(indices);
     }
 
+    collision(sphere){
+        var d = Math.sqrt(Math.pow((this.x - sphere.x), 2) + 
+                        Math.pow((this.y - sphere.y), 2) + 
+                        Math.pow((this.z - sphere.z), 2));
+        if(d <= (this.radius + sphere.radius)){ return true; }
+        return false;
+    }
+
+    collisionCoordinate(x, y, z){
+        var d = Math.sqrt(Math.pow((x - this.x), 2) + 
+                        Math.pow((y - this.y), 2) + 
+                        Math.pow((z - this.z), 2));
+        if(d <= (this.radius)){ return true; }
+        return false;
+    }
+
+    absorb(circle, gl) {
+        var a1 = ((this.getRadius() * this.getRadius()) * 3.14)
+        var a2 = (((circle.getRadius() * circle.getRadius()) * 3.14) / 5)
+        var newRadius = Math.sqrt(((a1 + a2) / 3.14))
+        if (newRadius > 0.3)
+            newRadius = 0.3
+        this.setRadius(newRadius) 
+        this.generate()
+        this.genBuffers(gl)
+        return this;
+    }
+
+    getRandomPoint() {
+        var rand = Math.floor(Math.random() * (this.vertices.length));
+        if (rand == 0)
+            rand += 3
+        if (rand == 1)
+            rand += 2;
+        if (rand == 2)
+            rand++;
+        if (rand % 3 != 0)
+            while ((rand % 3) != 0) {
+                rand--;
+            }
+        return [this.vertices[rand], this.vertices[rand + 1]];
+    }
+
     setx(x) {
         this.x = x;
     }
@@ -90,6 +133,9 @@ class Sphere{
     }
     setNumSlices(NumSlices) {
         this.NumSlices = NumSlices;
+    }
+    setPoison(poison) {
+        this.poison = poison
     }
 
     
@@ -113,6 +159,9 @@ class Sphere{
     }
     getVertices() {
         return this.vertices;
+    }
+    getPoison() { 
+        return this.poison
     }
 
     genBuffers(gl) {

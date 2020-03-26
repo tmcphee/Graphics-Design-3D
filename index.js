@@ -16,10 +16,13 @@ const at = vec3(0.0, 0.0, 0.0);
 const up = vec3(0.0, 1.0, 0.0);
 
 function main() {
+    var score = 0;
+
     console.log("program start")
     const canvas = document.querySelector("#glCanvas");
     const scoreCanvas = document.getElementById("score");
     const goCanvas = document.getElementById("gameOver");
+
     // Initialize the GL context and text contexts
     const gl = canvas.getContext("webgl");
     const ctx = scoreCanvas.getContext("2d");
@@ -36,6 +39,7 @@ function main() {
       + '  gl_Position = modelViewMatrix * vec4(vposition, 1.0);'
       +'vColor = vec4(vposition, 1.0);'
       + '}';
+
     //initialise fragment shader
     var fs =
       'precision mediump float;' +
@@ -43,6 +47,7 @@ function main() {
       ' void main(){' +
       ' gl_FragColor = vColor;'
       + '}'
+
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);
     var fshader = createShader(gl, fs, gl.FRAGMENT_SHADER);
@@ -73,6 +78,8 @@ function main() {
       return shader;
     }
   
+    drawScore(score, ctx);
+
     //Create Spheres
     var spheres = [new Sphere(0, 0, 0, 0.6, program, gl)];
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -112,6 +119,7 @@ function main() {
       spheres[0].draw(canvas);
       window.requestAnimationFrame(animate);
     }
+
   }
   
   window.onload = main;
