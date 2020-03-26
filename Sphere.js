@@ -15,6 +15,7 @@ class Sphere{
         this.petri = false;
         this.indexbuffer;
         this.normals = []; //Definately not correct, fix later.
+        this.points = 
         this.vertices = [];
         this.indices = [];
         this.numIndices = 0;
@@ -31,7 +32,7 @@ class Sphere{
     generate() {
     // Initialization
         var vertices, indices;
-        var SPHERE_DIV = 36;
+        var SPHERE_DIV = 72;
         var i, ai, si, ci;
         var j, aj, sj, cj;
         var p1, p2;
@@ -47,9 +48,9 @@ class Sphere{
             si = Math.sin(ai);
             ci = Math.cos(ai);
   
-            vertices.push(si * sj * this.radius);  // X
-            vertices.push(cj * this.radius);       // Y
-            vertices.push(ci * sj * this.radius);  // Z
+            vertices.push(this.x + si * sj * this.radius);  // X
+            vertices.push(this.y + cj * this.radius);       // Y
+            vertices.push(this.z + ci * sj * this.radius);  // Z
             
           }
         }

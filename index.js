@@ -18,7 +18,6 @@ const up = vec3(0.0, 1.0, 0.0);
 function main() {
     var score = 0;
 
-    console.log("program start")
     const canvas = document.querySelector("#glCanvas");
     const scoreCanvas = document.getElementById("score");
     const goCanvas = document.getElementById("gameOver");
@@ -56,6 +55,9 @@ function main() {
     gl.viewport( 0, 0, canvas.width, canvas.height );
     
     gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    gl.enable(gl.POLYGON_OFFSET_FILL);
+    gl.polygonOffset(1.0, 2.0);
 
     gl.attachShader(program, vshader);
     gl.attachShader(program, fshader);
@@ -79,12 +81,12 @@ function main() {
     }
   
     drawScore(score, ctx);
-
+    
     //Create Spheres
-    var spheres = [new Sphere(0, 0, 0, 0.6, program, gl)];
+    var spheres = [new Sphere(0, 0, 0, 0.6, program, gl), new Sphere(0,0.6,0,0.2,program,gl),new Sphere(0.6,0,0,0.2,program,gl), new Sphere(0,0,0.6,0.2,program,gl)];
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    console.log()
+    console.log(spheres[0].getVertices())
 
     modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
@@ -99,24 +101,27 @@ function main() {
     gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
-    console.log(modelViewMatrix)
-    spheres[0].draw(canvas)
-
+    spheres[1].draw(canvas);
+    spheres[0].draw(canvas);
+    spheres[2].draw(canvas);
+    spheres[3].draw(canvas);
     window.requestAnimationFrame(animate);
 
     function animate(time) {
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+      theta = theta + 0.01
       eye = vec3(radius*Math.sin(theta)*Math.cos(phi), 
         radius*Math.sin(theta)*Math.sin(phi), radius*Math.cos(theta));
 
-        modelViewMatrix = mult(modelViewMatrix, rotate(1, [1,1,0]))
+      modelViewMatrix = lookAt( eye, at, up );//mult(modelViewMatrix, rotate(0.3, [1,0,0]))
       projectionMatrix = ortho(left, right, bottom, ytop, near, far);
 
       gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
       gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
-
       spheres[0].draw(canvas);
+      spheres[1].draw(canvas);
+      spheres[2].draw(canvas);
+      spheres[3].draw(canvas)
       window.requestAnimationFrame(animate);
     }
 
