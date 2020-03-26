@@ -1,13 +1,17 @@
 function main() {
+    var score = 0;
+
     console.log("program start")
     const canvas = document.querySelector("#glCanvas");
     const scoreCanvas = document.getElementById("score");
     const goCanvas = document.getElementById("gameOver");
+
     // Initialize the GL context and text contexts
     const gl = canvas.getContext("webgl");
     const ctx = scoreCanvas.getContext("2d");
     const goctx = goCanvas.getContext("2d");
     goCanvas.style.display = "none";
+
     //Initialise vertex shader
     var vs =
       'attribute vec3 vposition;'
@@ -16,6 +20,7 @@ function main() {
       + '  gl_Position = vec4(vposition, 1.0);'
       +'vColor = vec4(vposition, 1.0);'
       + '}';
+
     //initialise fragment shader
     var fs =
       'precision mediump float;' +
@@ -23,6 +28,7 @@ function main() {
       ' void main(){' +
       ' gl_FragColor = vColor;'
       + '}'
+
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);
     var fshader = createShader(gl, fs, gl.FRAGMENT_SHADER);
@@ -47,14 +53,18 @@ function main() {
       return shader;
     }
   
+    drawScore(score, ctx);
+
     //Create Spheres
     var spheres = [new Sphere(0, 0, 0, 0.6, program, gl)];
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     spheres[0].draw(canvas);
 
-    const matrix = mat4.create()
-    console.log(matrix)
+    //const matrix = mat4.create()
+    //console.log(matrix)
+
+    
   }
   
   window.onload = main;
