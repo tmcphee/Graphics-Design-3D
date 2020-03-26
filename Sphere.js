@@ -151,7 +151,6 @@ class Sphere{
         this.poison = poison
     }
 
-    
     getx() {
         return this.x;
     }

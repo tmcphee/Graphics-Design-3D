@@ -75,7 +75,8 @@ function main() {
     gl.linkProgram(program);
     gl.useProgram(program)
     gl.clearColor(0.0, 0.5, 0.0, 1.0);
-    
+    gl.depthFunc(gl.LESS);
+
     //Function to create a shader from input text
     function createShader(gl, sourceCode, type) {
       // Compiles either a shader of type gl.VERTEX_SHADER or gl.FRAGMENT_SHADER
@@ -230,6 +231,5 @@ function main() {
     }
 
   }
-  
   window.onload = main;
   
