@@ -182,7 +182,7 @@ class Sphere{
     }
     setPetri() {
         this.petri = true;
-        this.colour = [1, 0.85, 1, 1]
+        //this.colour = [1, 0.85, 1, 1]
     }
 
     getx() {
