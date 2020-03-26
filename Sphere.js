@@ -45,7 +45,6 @@ class Sphere{
         this.numIndices = 0;
         this.colour = [x + 0.1, y + 0.1, z + 0.1];
         this.complete = false;
-        this.poison = false;
         //Generate points of the sphere
         this.generate();
 
@@ -110,6 +109,8 @@ class Sphere{
       }
 
     collision(sphere){
+                if (this.petri == true)
+            return false;
         var d = Math.sqrt(Math.pow((this.x - sphere.x), 2) + 
                         Math.pow((this.y - sphere.y), 2) + 
                         Math.pow((this.z - sphere.z), 2));
@@ -149,7 +150,7 @@ class Sphere{
             while ((rand % 3) != 0) {
                 rand--;
             }
-            return [this.vertices[rand], this.vertices[rand + 1], this.vertices[rand + 2]];
+        return [this.vertices[rand], this.vertices[rand + 1], this.vertices[rand + 2]];
     }
 
     setx(x) {
@@ -164,6 +165,9 @@ class Sphere{
     setRadius(radius) {
         this.radius = radius;
     }
+    setVertices(vertices) {
+        this.vertices = vertices;
+    }
     setShader(shader) {
         this.Shader = shader;
     }
@@ -172,6 +176,9 @@ class Sphere{
     }
     setPoison(poison) {
         this.poison = poison
+    }
+    setComplete(complete) {
+        this.complete = complete
     }
 
     getx() {

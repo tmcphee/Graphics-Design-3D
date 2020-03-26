@@ -24,3 +24,26 @@ function checkCollision(spheres, index) {
     return -1;
 }
 
+function myScale(circles, gl, speed) {
+    if (circles.length == 1)
+        return circles;
+    origin = circles.shift(1);
+    circles.map(x => {
+        if (x.getRadius() < 0.4) {
+            vertices = x.getVertices()
+            for (var i = 0; i < vertices.length; i += 3) {
+                vertices[i] = ((vertices[i] - x.getx()) * speed) + x.getx();
+                vertices[i + 1] = ((vertices[i + 1] - x.gety()) * speed) + x.gety();
+                vertices[i + 2] = ((vertices[i + 2] - x.getz()) * speed) + x.getz();
+            }
+            x.setVertices(vertices);
+            x.setRadius(x.getRadius() * speed);
+            x.genBuffers(gl);
+        }
+        else 
+            x.setComplete(true);
+    });
+    circles.unshift(origin)
+    return circles;
+}
+

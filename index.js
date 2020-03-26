@@ -47,7 +47,7 @@ function main() {
     'varying vec3 Normal;'+
     'uniform vec4 fColor;' +
     ' void main(){' +
-    '   float ambientStrength = 0.1;' +
+    '   float ambientStrength = 0.8;' +
     '   vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);'+
     '   gl_FragColor = vec4(ambient, 1.0) * fColor;'+
     '}'
@@ -88,7 +88,7 @@ function main() {
     drawScore(score, ctx);
     
     //Create Spheres
-    var spheres = [new Sphere(0, 0, 0, 0.6, program, gl), new Sphere(0,0.6,0,0.2,program,gl),new Sphere(0.6,0,0,0.2,program,gl), new Sphere(0,0,0.6,0.2,program,gl)];
+    var spheres = [new Sphere(0, 0, 0, 0.6, program, gl), new Sphere(0,0.6,0,0.1,program,gl),new Sphere(0.6,0,0,0.1,program,gl), new Sphere(0,0,0.6,0.1,program,gl)];
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -149,7 +149,6 @@ function main() {
     }); 
 
     function stopMotion() {
-      console.log("here")
       angle = 0.8//Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
       axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)]
     }
@@ -163,7 +162,7 @@ function main() {
         spheres[spheres.length] = c;
       }
 
-      //spheres = scale(spheres, gl, 1.003)
+      spheres = myScale(spheres, gl, 1.003)
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       spheres[0].draw(canvas);
@@ -195,10 +194,8 @@ function main() {
 
       gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
       gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
-      //spheres[0].draw(canvas);
-      //spheres[1].draw(canvas);
-      //spheres[2].draw(canvas);
-      //spheres[3].draw(canvas);
+
+
       window.requestAnimationFrame(animate);
     }
 
