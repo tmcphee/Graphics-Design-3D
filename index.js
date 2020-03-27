@@ -144,6 +144,21 @@ function main() {
       stopMotion();
     }); 
 
+    canvas.addEventListener('mouseout', function(event) {
+      xEnd = 2*event.clientX/canvas.width-1;
+      yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
+      d = (xEnd * xEnd) + (yEnd * yEnd);
+      if (d < 1.0)
+        zEnd = Math.sqrt(1.0 - d);
+      else {
+        zEnd = 0.0;
+        var a = 1.0 / Math.sqrt(d);
+        xEnd *= a;
+        yEnd *= a;
+      }
+      stopMotion();
+    }); 
+
     function stopMotion() {
       angle = 0.8//Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
       axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)];
