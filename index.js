@@ -85,11 +85,8 @@ function main() {
     drawScore(score, ctx);
     
     //Create Spheres
-    var spheres = [new Sphere(0, 0, 0, 0.6, program, gl), new Sphere(0,0.6,0,0.1,program,gl),new Sphere(0.6,0,0,0.1,program,gl), new Sphere(0,0,0.6,0.1,program,gl)];
+    var spheres = [new Sphere(0, 0, 0, 0.6, program, gl)];
     spheres[0].setPetri();
-    spheres[1].setPetri();
-    spheres[2].setPetri();
-    spheres[3].setPetri();
     
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -107,9 +104,6 @@ function main() {
     gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
     gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
-    spheres[1].draw(canvas);
-    spheres[2].draw(canvas);
-    spheres[3].draw(canvas);
     spheres[0].draw(canvas);
 
     var xStart = 0;
