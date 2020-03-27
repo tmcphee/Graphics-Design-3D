@@ -1,22 +1,22 @@
 function gameloop(sphere, shader, gl) {
-    if (Math.floor(Math.random() * 1000) < 3) {
+    if (Math.floor(Math.random() * 100) < 1 ) {
         var temp = sphere[0].getRandomPoint();
-        if (sphere.length < 12) {
+        if (sphere.length < 16) {
             var x = parseFloat(temp[0])
             var y = parseFloat(temp[1])
             var z = parseFloat(temp[2])
-            if (x < 0)
-                x += 0.05
-            else
-                x -= 0.05
-            if (y < 0)
-                y += 0.05
-            else
-                y -= 0.05
-            if (z < 0)
-                z += 0.05
-            else
-                z -= 0.05
+            // if (x < 0)
+            //     x += 0.05
+            // else
+            //     x -= 0.05
+            // if (y < 0)
+            //     y += 0.05
+            // else
+            //     y -= 0.05
+            // if (z < 0)
+            //     z += 0.05
+            // else
+            //     z -= 0.05
         }
             return (new Sphere(x,y,z, 0.05, shader, gl));
     }
@@ -41,9 +41,6 @@ function checkCollision(spheres, index) {
 }
 
 function myScale(circles, gl, speed) {
-    if (circles.length == 1)
-        return circles;
-    origin = circles.shift(1);
     circles.map(x => {
         if (x.getRadius() < 0.3 && !x.getPetri()) {
             vertices = x.getVertices()
@@ -59,7 +56,6 @@ function myScale(circles, gl, speed) {
         else 
             x.setComplete(true);
     });
-    circles.unshift(origin)
     return circles;
 }
 

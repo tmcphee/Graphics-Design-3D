@@ -43,7 +43,8 @@ class Sphere{
         this.vertices = [];
         this.indices = [];
         this.numIndices = 0;
-        this.colour = [x + 0.1, y + 0.1, z + 0.1];
+        this.colourRef = [Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)]
+        this.colour = [this.colourRef[0] / 255, this.colourRef[1] / 255, this.colourRef[2] / 255];
         this.complete = false;
         //Generate points of the sphere
         this.generate();
@@ -118,25 +119,28 @@ class Sphere{
         return false;
     }
 
-    collisionCoordinate(x, y, z){
-        var d = Math.sqrt(Math.pow((x - this.x), 2) + 
-                        Math.pow((y - this.y), 2) + 
-                        Math.pow((z - this.z), 2));
-        if(d <= (this.radius)){ return true; }
+    collisionCoordinate(colour) {
+        console.log("start")
+        console.log(colour)
+        console.log(this.colourRef)
+        if (colour[0] == this.colourRef[0] && colour[1] == this.colourRef[1] && colour[2] == this.colourRef[2]) {
+            console.log("in here boys")
+            return true;
+        }
         return false;
     }
 
-    // absorb(circle, gl) {
-    //     var a1 = ((this.getRadius() * this.getRadius() * this.getRadius) * PI * (4/3))
-    //     var a2 = ((circle.getRadius() * circle.getRadius() * this.getRadius) * PI * (4/3))
-    //     var newRadius = Math.cbrt(((a1 + a2) / 3.14 * (4/3)))
-    //     if (newRadius > 0.3)
-    //         newRadius = 0.3
-    //     this.setRadius(newRadius) 
-    //     this.generate()
-    //     this.genBuffers(gl)
-    //     return this;
-    // }
+    absorb(circle, gl, canvas) {
+        var a1 = ((this.getRadius() * this.getRadius()) * 3.14)
+        var a2 = ((circle.getRadius() * circle.getRadius()) * 3.14 / 3)
+        var newRadius = Math.sqrt(((a1 + a2) / 3.14))
+        if (newRadius > 0.3)
+            newRadius = 0.3
+        this.setRadius(newRadius) 
+        this.generate()
+        this.genBuffers(gl)
+        this.draw(canvas)
+    }
 
     getRandomPoint() {
         var rand = Math.floor(Math.random() * (this.vertices.length));
@@ -205,9 +209,6 @@ class Sphere{
     }
     getVertices() {
         return this.vertices;
-    }
-    getPoison() { 
-        return this.poison
     }
     getPetri() {
         return this.petri;

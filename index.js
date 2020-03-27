@@ -23,7 +23,7 @@ function main() {
     const goCanvas = document.getElementById("gameOver");
 
     // Initialize the GL context and text contexts
-    const gl = canvas.getContext("webgl");
+    const gl = canvas.getContext("webgl",  {preserveDrawingBuffer: true});
     const ctx = scoreCanvas.getContext("2d");
     const goctx = goCanvas.getContext("2d");
     goCanvas.style.display = "none";
@@ -49,7 +49,7 @@ function main() {
     ' void main(){' +
     '   float ambientStrength = 0.8;' +
     '   vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);'+
-    '   gl_FragColor = vec4(ambient, 1.0) * fColor;'+
+    '   gl_FragColor = fColor;'+
     '}'
 
     //Compile and attach shader to GL context
@@ -60,9 +60,6 @@ function main() {
     gl.viewport( 0, 0, canvas.width, canvas.height );
     
     gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-    gl.enable(gl.POLYGON_OFFSET_FILL);
-    gl.polygonOffset(1.0, 2.0);
 
     gl.attachShader(program, vshader);
     gl.attachShader(program, fshader);
@@ -155,39 +152,50 @@ function main() {
 
     function stopMotion() {
       angle = 0.8//Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
-      axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)]
+      axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)];
+      if (!(axis[0]) && !(axis[1]) && !(axis[2])) {
+        var x = event.clientX
+        var y = 720 - event.clientY
+        var pixels = new Uint8Array(4);
+        gl.readPixels(x-2,y+2,1,1, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
+        for (var i = 0; i < spheres.length; i++) {
+          if (spheres[i] != null && !spheres[i].getPetri() && spheres[i].collisionCoordinate(pixels)) {
+            score = score + ((spheres[i].getRadius()) * 10)
+            console.log(score)
+            spheres[i] = null;
+          }
+        }
+        console.log(x)
+        console.log(y)
+        spheres = spheres.filter(x => x != null);}
     }
 
     console.log(axis)
     window.requestAnimationFrame(animate);
 
     function animate(time) {
-      var c = gameloop(spheres, program, gl);
-      console.log(c)
-      if (c != null && !(spheres.map(x => x.collision(c)).includes(true))) {
-        spheres[spheres.length] = c;
+      if (spheres.length < 16) {
+        var c = gameloop(spheres, program, gl);
+        console.log(c)
+        if (c != null) {
+          spheres[spheres.length] = c;
+        }
       }
 
-      spheres = myScale(spheres, gl, 1.0003)
+      spheres = myScale(spheres, gl, 1.0006)
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       spheres[0].draw(canvas);
       for (var i = 1; i < spheres.length; i++) {
         if (spheres[i] == null)
           continue;
-        // var check = checkCollision(spheres, i)
-        // if (check == -1) {
-        //   spheres[i].draw(canvas);
-        // } else if (spheres[i].getPoison() == true) {
-        //   spheres[check] = null;
-        // } else if (spheres[check].getPoison() == true) {
-        //   spheres[i] = null;
-        // } else if (check > i) {
-        //   spheres[i] = spheres[i].absorb(spheres[check], gl);
-        //   spheres[check] = null;
-        else
+        var check = checkCollision(spheres, i)
+        if (check == -1 || spheres[i].getPetri()) {
           spheres[i].draw(canvas);
-        // } 
+        } else if (check > i) {
+          spheres[i].absorb(spheres[check], gl, canvas)
+          spheres[check] = null;
+        } 
       }
       spheres = spheres.filter(x => x != null);
 
@@ -199,7 +207,7 @@ function main() {
       gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
       gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
-
+      drawScore(score, ctx);
       window.requestAnimationFrame(animate);
     }
 
