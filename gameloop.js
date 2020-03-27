@@ -59,3 +59,24 @@ function myScale(circles, gl, speed) {
     return circles;
 }
 
+function endGame(circles) {
+    var count = 0;
+    for (var i = 0; i < circles.length; i++) {
+        if (circles[i].getComplete() == true)
+            count += 1;
+    }
+    if (count > 2)
+        return true;
+    return false;
+}
+function drawGameOver(ctx) {
+    ctx.canvas.style.display = 'initial'
+    ctx.font = "32px Verdana";
+    // Create gradient
+    var gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+    gradient.addColorStop("0","magenta");
+    gradient.addColorStop("0.5", "red");
+    gradient.addColorStop("1.0", "cyan");
+    ctx.fillStyle = gradient;
+    ctx.fillText("GAMEOVER", 1, 30);
+}

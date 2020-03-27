@@ -217,7 +217,12 @@ function main() {
       gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
       drawScore(score, ctx);
-      window.requestAnimationFrame(animate);
+      if (!endGame(spheres))
+        window.requestAnimationFrame(animate);
+      else {
+        window.cancelAnimationFrame(animate)
+        drawGameOver(goctx)
+      }
     }
 
   }

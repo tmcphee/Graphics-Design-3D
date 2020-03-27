@@ -213,6 +213,9 @@ class Sphere{
     getPetri() {
         return this.petri;
     }
+    getComplete() {
+        return this.complete
+    }
 
     genBuffers(gl) {
         //Generate a vertex buffer and give it our vertices
