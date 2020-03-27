@@ -163,42 +163,26 @@ function main() {
 
     function animate(time) {
       var c = gameloop(spheres, program, gl);
-      console.log(c)
-      if (c != null && !(spheres.map(x => x.collision(c)).includes(true))) {
+      if (c != null)
         spheres[spheres.length] = c;
-      }
 
       spheres = myScale(spheres, gl, 1.0003)
+
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      spheres[0].draw(canvas);
-      for (var i = 1; i < spheres.length; i++) {
-        if (spheres[i] == null)
-          continue;
-        // var check = checkCollision(spheres, i)
-        // if (check == -1) {
-        //   spheres[i].draw(canvas);
-        // } else if (spheres[i].getPoison() == true) {
-        //   spheres[check] = null;
-        // } else if (spheres[check].getPoison() == true) {
-        //   spheres[i] = null;
-        // } else if (check > i) {
-        //   spheres[i] = spheres[i].absorb(spheres[check], gl);
-        //   spheres[check] = null;
-        else
-          spheres[i].draw(canvas);
-        // } 
-      }
-      spheres = spheres.filter(x => x != null);
 
       if (axis[0] || axis[1] || axis[2]) {
         modelViewMatrix = mult(modelViewMatrix, rotate(angle, axis))
       }
-      projectionMatrix = ortho(left, right, bottom, ytop, near, far);
-
       gl.uniformMatrix4fv( modelViewMatrixLoc, false, flatten(modelViewMatrix) );
-      gl.uniformMatrix4fv( projectionMatrixLoc, false, flatten(projectionMatrix) );
 
+      for (var i = 0; i < spheres.length; i++) {
+        if (spheres[i] == null)
+          continue;
+        else
+          spheres[i].draw(canvas);
+      }
+      spheres = spheres.filter(x => x != null);
 
       window.requestAnimationFrame(animate);
     }
