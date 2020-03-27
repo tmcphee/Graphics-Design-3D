@@ -38,6 +38,7 @@ class Sphere{
         this.vbo;
         this.petri = false;
         this.indexbuffer;
+        this.normalbuffer;
         this.normals = []; //Definately not correct, fix later.
         this.points = 
         this.vertices = [];
@@ -223,6 +224,10 @@ class Sphere{
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
 
+        this.normalbuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalbuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW)
+
         //Generate a new index buffer and give it our indices
         this.indexbuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
@@ -234,6 +239,7 @@ class Sphere{
         //define local "gl" variable so it's easier to call, same for shader
         var gl = this.gl;
         var shaderProgram = this.shaderProgram;
+
         //Bind programs
         gl.useProgram(shaderProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
@@ -242,7 +248,22 @@ class Sphere{
         var vpos = gl.getAttribLocation(shaderProgram, "vposition");
         gl.vertexAttribPointer(vpos, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vpos);
+        
+        //Bind normals buffer
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalbuffer);
+
+        //Pass normals to shader
+        const normalLoc = gl.getAttribLocation(shaderProgram, 'normal');
+        gl.vertexAttribPointer(normalLoc, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(normalLoc);
+       
+        //Pass position of light
+        var lightPos = gl.getUniformLocation(shaderProgram, "light_pos");
+
+        //Bind index buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
+
+        //Pass colour to shader
         var fColorLocation = gl.getUniformLocation(shaderProgram, "fColor");
         gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
 

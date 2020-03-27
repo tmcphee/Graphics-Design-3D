@@ -30,18 +30,23 @@ function main() {
 
     //Initialise vertex shader
     var vs =
-      'attribute vec3 vposition;'
+       'attribute vec3 vposition; '
+      +'attribute vec3 normal;'
       +'uniform mat4 projectionMatrix;'
       +'uniform mat4 modelViewMatrix;'
-      +'varying vec3 FragPos;'
-      +'varying vec3 Normal;'
-      + 'void main(){'
-      + '  gl_Position = projectionMatrix * modelViewMatrix * vec4(vposition, 1.0);'
-      + '  FragPos = vec3(modelViewMatrix * vec4(vposition, 1.0));'
-      + '}';
+      +'varying vec3 v_Vertex;'
+      +'varying vec3 v_Normal;'
+      +'varying vec3 light_pos;'
+      +'void main(){'
+      +'  gl_Position = projectionMatrix * modelViewMatrix * vec4(vposition, 1.0);'
+      +'  v_Vertex = vec3( modelViewMatrix * vec4(vposition, 1.0) );'
+      +'  v_Normal = vec3(vec4(normal, 0.0) );'
+      +'  light_pos = vec3(projectionMatrix * modelViewMatrix) * vec3(0, 1, -1);'
+      +'}';
 
     //initialise fragment shader
     var fs =
+<<<<<<< Updated upstream
     'precision mediump float;' +
     'varying vec3 FragPos;'+
     'varying vec3 Normal;'+
@@ -51,6 +56,30 @@ function main() {
     '   vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);'+
     '   gl_FragColor = fColor;'+
     '}'
+=======
+    'precision mediump float;' 
+    +'varying vec3 v_Vertex;'
+    +'varying vec4 v_Color;'
+    +'varying vec3 v_Normal;'
+    +'uniform vec4 fColor;' 
+    +'varying vec3 light_pos;'
+    +'void main(){' 
+    +'  vec3 to_light;'
+    +'  vec3 vertex_normal;'
+    +'  float cos_angle;'
+    //Calculate Light position
+    +'  to_light = light_pos - v_Vertex;'
+    +'  to_light = normalize (to_light);'
+    //calculate normal position
+    +'  vertex_normal = normalize (v_Normal);'
+    //Calculate angles
+    +'  cos_angle = dot(vertex_normal, to_light);'
+    +'  cos_angle = clamp(cos_angle, 0.0, 1.0);'
+    +'  float ambientStrength = 0.8;' 
+    +'  vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);'
+    +'  gl_FragColor =  vec4(ambient, 1.0) * cos_angle * fColor;'
+    +'}'
+>>>>>>> Stashed changes
 
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);
