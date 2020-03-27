@@ -30,6 +30,16 @@ function drawScore(score, ctx) {
     ctx.fillText("Score: " + score.toFixed(2), 1, 30);
 }
 
+function checkCollision(spheres, index) {
+    for (var i = 1; i < spheres.length; i++) {
+        if (i == index || spheres[i] == null)
+            continue;
+        if (spheres[i].collision(spheres[index]))
+            return i;
+    }
+    return -1;
+}
+
 function myScale(circles, gl, speed) {
     if (circles.length == 1)
         return circles;

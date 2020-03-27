@@ -1,9 +1,9 @@
 var PI = 3.14;
 var points = []
-var SPHERE_DIV = 36;
 
 function getPoints() {
     if (points.length == 0) {
+        var SPHERE_DIV = 72
         console.log("here")
         for (var j = 0; j <= SPHERE_DIV; j++) {
             aj = j * Math.PI / SPHERE_DIV;
@@ -55,6 +55,7 @@ class Sphere{
     generate() {
     // Initialization
         var vertices, indices;
+        var SPHERE_DIV = 72;
         var p1, p2;
   
         // Vertices
@@ -107,23 +108,23 @@ class Sphere{
         return Normal;
       }
 
-    // collision(sphere){
-    //             if (this.petri == true)
-    //         return false;
-    //     var d = Math.sqrt(Math.pow((this.x - sphere.x), 2) + 
-    //                     Math.pow((this.y - sphere.y), 2) + 
-    //                     Math.pow((this.z - sphere.z), 2));
-    //     if(d <= (this.radius + sphere.radius)){ return true; }
-    //     return false;
-    // }
+    collision(sphere){
+                if (this.petri == true)
+            return false;
+        var d = Math.sqrt(Math.pow((this.x - sphere.x), 2) + 
+                        Math.pow((this.y - sphere.y), 2) + 
+                        Math.pow((this.z - sphere.z), 2));
+        if(d <= (this.radius + sphere.radius)){ return true; }
+        return false;
+    }
 
-    // collisionCoordinate(x, y, z){
-    //     var d = Math.sqrt(Math.pow((x - this.x), 2) + 
-    //                     Math.pow((y - this.y), 2) + 
-    //                     Math.pow((z - this.z), 2));
-    //     if(d <= (this.radius)){ return true; }
-    //     return false;
-    // }
+    collisionCoordinate(x, y, z){
+        var d = Math.sqrt(Math.pow((x - this.x), 2) + 
+                        Math.pow((y - this.y), 2) + 
+                        Math.pow((z - this.z), 2));
+        if(d <= (this.radius)){ return true; }
+        return false;
+    }
 
     // absorb(circle, gl) {
     //     var a1 = ((this.getRadius() * this.getRadius() * this.getRadius) * PI * (4/3))
@@ -139,6 +140,16 @@ class Sphere{
 
     getRandomPoint() {
         var rand = Math.floor(Math.random() * (this.vertices.length));
+        if (rand == 0)
+            rand += 3
+        if (rand == 1)
+            rand += 2;
+        if (rand == 2)
+            rand++;
+        if (rand % 3 != 0)
+            while ((rand % 3) != 0) {
+                rand--;
+            }
         return [this.vertices[rand], this.vertices[rand + 1], this.vertices[rand + 2]];
     }
 
@@ -171,6 +182,7 @@ class Sphere{
     }
     setPetri() {
         this.petri = true;
+        //this.colour = [1, 0.85, 1, 1]
     }
 
     getx() {
