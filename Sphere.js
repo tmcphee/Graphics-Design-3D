@@ -1,5 +1,23 @@
 var PI = 3.14;
-var points = []
+var points = [];
+var indices = [];
+var baseNormals = [];
+
+//Calculate normals of triangle
+function CalculateSurfaceNormal(X1, X2, X3, Y1, Y2, Y3, Z1, Z2, Z3){
+    var U = [];
+    U[0] = (X2 - X1);
+    U[1] = (Y2 - Y1);
+    U[2] = (Z2 - Z1);
+
+    var V = [];
+    V[0] = (X3 - X1);
+    V[1] = (Y3 - Y1);
+    V[2]= (Z3 - Z1);
+
+    var Normal = [(U[1] * V[2]) - (U[2] * V[1]), (U[2] * V[0]) - (U[0] * V[2]), (U[0] * V[1]) - (U[1] * V[0])];
+    return Normal;
+  }
 
 function getPoints() {
     if (points.length == 0) {
@@ -20,6 +38,31 @@ function getPoints() {
               
             }
           }
+
+          //Calculate Normals
+        for (var i = 0; i < points.length; i+=9){
+            var norm = this.CalculateSurfaceNormal(points[i + 0], points[i + 1], points[i + 2], points[i + 3], points[i + 4], points[i + 5], points[i + 6], points[i + 7], points[i + 8]);
+            baseNormals.push(norm[0]);
+            baseNormals.push(norm[1]);
+            baseNormals.push(norm[2]);
+        }
+
+        // Indices
+        for (var j = 0; j < SPHERE_DIV; j++) {
+            for (var i = 0; i < SPHERE_DIV; i++) {
+              p1 = j * (SPHERE_DIV+1) + i;
+              p2 = p1 + (SPHERE_DIV+1);
+    
+              indices.push(p1);
+              indices.push(p2);
+              indices.push(p1 + 1);
+    
+              indices.push(p1 + 1);
+              indices.push(p2);
+              indices.push(p2 + 1);
+            }
+          }
+          indices = new Uint16Array(indices);
     }
     return points
 }
@@ -29,24 +72,38 @@ class Sphere{
         /*Initalise Variables such as X position Y position, GL context, radius, pointer 
         to shader program, Vertex Buffer, Index Buffer, vertices, indices, and the number 
         of Indices*/
+        
+        //pointers to gl context and shader program
+        this.gl = gl;
+        this.shaderProgram = shader;
+
+        //circle radius and quordinates
+        this.radius = radius;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.gl = gl;
-        this.radius = radius;
-        this.shaderProgram = shader;
-        this.vbo;
+
+        
+
+        //If this circle is petri dish it is immune to collisions
         this.petri = false;
+
+        //Buffers
         this.indexbuffer;
         this.normalbuffer;
+        this.vbo;
+
+        //arrays to store normals vertices and 
         this.normals = []; //Definately not correct, fix later.
-        this.points = 
-        this.vertices = [];
-        this.indices = [];
-        this.numIndices = 0;
+        this.vertices = [];//Replace with points
+        
+        //Variables to store Colour
         this.colourRef = [Math.floor(Math.random() * 256), Math.floor(Math.random() * 256), Math.floor(Math.random() * 256)]
         this.colour = [this.colourRef[0] / 255, this.colourRef[1] / 255, this.colourRef[2] / 255];
         this.complete = false;
+
+        //Model Matrix 
+        this.modelMatrix = [];
         //Generate points of the sphere
         this.generate();
 
@@ -61,54 +118,22 @@ class Sphere{
         var p1, p2;
   
         // Vertices
-        var vertices = [], indices = [], points = getPoints();
+        var vertices = [], points = getPoints();
         for (var i = 0; i < points.length; i += 3) {
             vertices.push(this.x + points[i] * this.radius);            // X
             vertices.push(this.y + points[i+1] * this.radius);          // Y
             vertices.push(this.z + points[i+2] * this.radius);          // Z
         }
-        this.vertices = new Float32Array(vertices);
-  
-        // Indices
-        for (var j = 0; j < SPHERE_DIV; j++) {
-          for (var i = 0; i < SPHERE_DIV; i++) {
-            p1 = j * (SPHERE_DIV+1) + i;
-            p2 = p1 + (SPHERE_DIV+1);
-  
-            indices.push(p1);
-            indices.push(p2);
-            indices.push(p1 + 1);
-  
-            indices.push(p1 + 1);
-            indices.push(p2);
-            indices.push(p2 + 1);
-          }
+
+        for (var i = 0; i < points.length; i += 3) {
+            this.normals.push(this.x + baseNormals[i] * this.radius);            // X
+            this.normals.push(this.y + baseNormals[i+1] * this.radius);          // Y
+            this.normals.push(this.z + baseNormals[i+2] * this.radius);          // Z
         }
 
-        //Calculate Normals
-        for (var i = 0; i < vertices.length; i+=9){
-            var norm = this.CalculateSurfaceNormal(vertices[i + 0], vertices[i + 1], vertices[i + 2], vertices[i + 3], vertices[i + 4], vertices[i + 5], vertices[i + 6], vertices[i + 7], vertices[i + 8]);
-            this.normals.push(norm[0]);
-            this.normals.push(norm[1]);
-            this.normals.push(norm[2]);
-        }
-        this.indices = new Uint16Array(indices);
+        this.vertices = new Float32Array(vertices);
     }
-    //Calculate normals of triangle
-    CalculateSurfaceNormal(X1, X2, X3, Y1, Y2, Y3, Z1, Z2, Z3){
-        var U = [];
-        U[0] = (X2 - X1);
-        U[1] = (Y2 - Y1);
-        U[2] = (Z2 - Z1);
-  
-        var V = [];
-        V[0] = (X3 - X1);
-        V[1] = (Y3 - Y1);
-        V[2]= (Z3 - Z1);
-  
-        var Normal = [(U[1] * V[2]) - (U[2] * V[1]), (U[2] * V[0]) - (U[0] * V[2]), (U[0] * V[1]) - (U[1] * V[0])];
-        return Normal;
-      }
+    
 
     collision(sphere){
                 if (this.petri == true)
@@ -231,7 +256,7 @@ class Sphere{
         //Generate a new index buffer and give it our indices
         this.indexbuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
     }
 
     draw(canvas) {
@@ -268,7 +293,7 @@ class Sphere{
         gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
 
         //Draw the triangle
-        gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
     }
 
 }
