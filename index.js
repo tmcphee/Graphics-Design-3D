@@ -46,7 +46,6 @@ function main() {
 
     //initialise fragment shader
     var fs =
-<<<<<<< Updated upstream
     'precision mediump float;' +
     'varying vec3 FragPos;'+
     'varying vec3 Normal;'+
@@ -56,7 +55,6 @@ function main() {
     '   vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);'+
     '   gl_FragColor = fColor;'+
     '}'
-=======
     'precision mediump float;' 
     +'varying vec3 v_Vertex;'
     +'varying vec4 v_Color;'
@@ -79,7 +77,6 @@ function main() {
     +'  vec3 ambient = ambientStrength * vec3(1.0, 1.0, 1.0);'
     +'  gl_FragColor =  vec4(ambient, 1.0) * cos_angle * fColor;'
     +'}'
->>>>>>> Stashed changes
 
     //Compile and attach shader to GL context
     var vshader = createShader(gl, vs, gl.VERTEX_SHADER);
