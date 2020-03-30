@@ -109,6 +109,9 @@ class Sphere{
 
         //Generate vertex buffer and index buffer
         this.genBuffers(gl);
+
+        //Set whether or not is particle
+        this.isParticle = false;
     }
     
     generate() {
@@ -240,7 +243,23 @@ class Sphere{
         return this.petri;
     }
     getComplete() {
-        return this.complete
+        return this.complete;
+    }
+
+    setParticle(){
+        this.isParticle = true;
+    }
+
+    getParticle(){
+        return this.isParticle;
+    }
+
+    setColour(val1){
+        this.colour = val1;
+    }
+
+    getColour(){
+        return this.colour;
     }
 
     genBuffers(gl) {
@@ -249,10 +268,6 @@ class Sphere{
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
 
-        this.normalbuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalbuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW)
-
         //Generate a new index buffer and give it our indices
         this.indexbuffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
@@ -260,7 +275,6 @@ class Sphere{
     }
 
     draw(canvas) {
-        
         //define local "gl" variable so it's easier to call, same for shader
         var gl = this.gl;
         var shaderProgram = this.shaderProgram;
@@ -273,24 +287,13 @@ class Sphere{
         var vpos = gl.getAttribLocation(shaderProgram, "vposition");
         gl.vertexAttribPointer(vpos, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vpos);
-        
-        //Bind normals buffer
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalbuffer);
-
-        //Pass normals to shader
-        const normalLoc = gl.getAttribLocation(shaderProgram, 'normal');
-        gl.vertexAttribPointer(normalLoc, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(normalLoc);
-       
-        //Pass position of light
-        var lightPos = gl.getUniformLocation(shaderProgram, "light_pos");
 
         //Bind index buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexbuffer);
 
         //Pass colour to shader
         var fColorLocation = gl.getUniformLocation(shaderProgram, "fColor");
-        gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], this.colour[3]);
+        gl.uniform4f(fColorLocation, this.colour[0], this.colour[1], this.colour[2], 1);
 
         //Draw the triangle
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);

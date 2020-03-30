@@ -18,6 +18,8 @@ const up = vec3(0.0, 1.0, 0.0);
 function main() {
     var score = 0;
 
+    var audio = new Audio('Assets/pop.mp3');
+    
     const canvas = document.querySelector("#glCanvas");
     const scoreCanvas = document.getElementById("score");
     const goCanvas = document.getElementById("gameOver");
@@ -79,12 +81,20 @@ function main() {
       return shader;
     }
   
+    var intervalID = window.setInterval(function() { 
+      for (var i = 0; i < particles.length; i++){
+        particles[i] = null;
+      }
+      console.log("Got rid of them particles boss"); }, 1500);
+
     drawScore(score, ctx);
     
     //Create Spheres
     var spheres = [new Sphere(0, 0, 0, 0.6, program, gl)];
     spheres[0].setPetri();
     
+    var particles = [];
+
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -112,60 +122,34 @@ function main() {
     var angle = 0;
     var axis = [0,0,1];
 
+    var startDrag = false;
     canvas.addEventListener("mousedown", function(event){
-      xStart = 2*event.clientX/canvas.width-1;
-      yStart = 2*(canvas.height-event.clientY)/canvas.height-1;
-      var d = (xStart * xStart) + (yStart * yStart);
-      if (d < 1.0)
-        zStart = Math.sqrt(1.0 - d);
-      else {
-        zStart = 0.0;
-        var a = 1.0 / Math.sqrt(d);
-        xStart *= a;
-        yStart *= a;
-      }
-    }); 
-
-    canvas.addEventListener('mouseup', function(event) {
-      xEnd = 2*event.clientX/canvas.width-1;
-      yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
-      d = (xEnd * xEnd) + (yEnd * yEnd);
-      if (d < 1.0)
-        zEnd = Math.sqrt(1.0 - d);
-      else {
-        zEnd = 0.0;
-        var a = 1.0 / Math.sqrt(d);
-        xEnd *= a;
-        yEnd *= a;
-      }
-      stopMotion();
-    }); 
-
-    canvas.addEventListener('mouseout', function(event) {
-      xEnd = 2*event.clientX/canvas.width-1;
-      yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
-      d = (xEnd * xEnd) + (yEnd * yEnd);
-      if (d < 1.0)
-        zEnd = Math.sqrt(1.0 - d);
-      else {
-        zEnd = 0.0;
-        var a = 1.0 / Math.sqrt(d);
-        xEnd *= a;
-        yEnd *= a;
-      }
-      stopMotion();
-    }); 
-
-    function stopMotion() {
-      angle = 0.8//Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
-      axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)];
-      if (!(axis[0]) && !(axis[1]) && !(axis[2])) {
+      if (event.button == 0) {
+        xStart = 2*event.clientX/canvas.width-1;
+        yStart = 2*(canvas.height-event.clientY)/canvas.height-1;
+        var d = (xStart * xStart) + (yStart * yStart);
+        if (d < 1.0)
+          zStart = Math.sqrt(1.0 - d);
+        else {
+          zStart = 0.0;
+          var a = 1.0 / Math.sqrt(d);
+          xStart *= a;
+          yStart *= a;
+        }
+        startDrag = true;
+      } else if (event.button == 2) {
         var x = event.clientX
         var y = 720 - event.clientY
         var pixels = new Uint8Array(4);
         gl.readPixels(x-2,y+2,1,1, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
+        console.log(pixels)
         for (var i = 0; i < spheres.length; i++) {
           if (spheres[i] != null && !spheres[i].getPetri() && spheres[i].collisionCoordinate(pixels)) {
+            console.log("right before the pop")
+            for (var j = 0; j < 5; j++){
+              particles.push (particleSpawn(spheres[i], program, gl));
+            }
+            audio.play();
             score = score + ((spheres[i].getRadius()) * 10)
             console.log(score)
             spheres[i] = null;
@@ -173,14 +157,61 @@ function main() {
         }
         console.log(x)
         console.log(y)
-        spheres = spheres.filter(x => x != null);}
+        spheres = spheres.filter(x => x != null);
+      }
+    }); 
+
+    canvas.addEventListener('mouseup', function(event) {
+      if (startDrag) {
+        startDrag = false
+        xEnd = 2*event.clientX/canvas.width-1;
+        yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
+        d = (xEnd * xEnd) + (yEnd * yEnd);
+        if (d < 1.0)
+          zEnd = Math.sqrt(1.0 - d);
+        else {
+          zEnd = 0.0;
+          var a = 1.0 / Math.sqrt(d);
+          xEnd *= a;
+          yEnd *= a;
+        }
+        stopMotion();
+      }
+    }); 
+
+    canvas.addEventListener("contextmenu", function(event){
+        event.preventDefault();
+        return false;
+    }, false); 
+
+    canvas.addEventListener('mouseout', function(event) {
+      if (startDrag) {
+        startDrag = false;
+        xEnd = 2*event.clientX/canvas.width-1;
+        yEnd = 2*(canvas.height-event.clientY)/canvas.height-1;
+        d = (xEnd * xEnd) + (yEnd * yEnd);
+        if (d < 1.0)
+          zEnd = Math.sqrt(1.0 - d);
+        else {
+          zEnd = 0.0;
+          var a = 1.0 / Math.sqrt(d);
+          xEnd *= a;
+          yEnd *= a;
+        }
+        stopMotion();
+      }
+    }); 
+
+    function stopMotion() {
+      angle = 0.8//Math.sqrt(Math.pow(xEnd - xStart, 2),Math.pow(yEnd - yStart, 2),Math.pow(zEnd - zStart, 2))
+      axis = [(yStart * zEnd) - (zStart * yEnd), (zStart * xEnd) - (xStart * zEnd), (xStart * yEnd) - (yStart * xEnd)];
     }
 
     console.log(axis)
     window.requestAnimationFrame(animate);
 
     function animate(time) {
-      if (spheres.length < 16) {
+      if (spheres.length < 5) {
         var c = gameloop(spheres, program, gl);
         console.log(c)
         if (c != null) {
@@ -189,6 +220,7 @@ function main() {
       }
 
       spheres = myScale(spheres, gl, 1.0006)
+      
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       spheres[0].draw(canvas);
@@ -203,7 +235,34 @@ function main() {
           spheres[check] = null;
         } 
       }
+
+        particles.map(x => {
+          var speed = 0.9;
+          if (x != null){
+            if (x.getRadius() > 0.0 && !x.getPetri()) {
+              vertices = x.getVertices()
+              for (var i = 0; i < vertices.length; i += 3) {
+                vertices[i] = ((vertices[i] - x.getx()) * speed) + x.getx();
+                vertices[i + 1] = ((vertices[i + 1] - x.gety()) * speed) + x.gety();
+                vertices[i + 2] = ((vertices[i + 2] - x.getz()) * speed) + x.getz();
+              }
+              x.setVertices(vertices);
+              x.setRadius(x.getRadius() * speed);
+              x.genBuffers(gl);
+            }
+          }
+        });
+
+      for (var i = 0; i < particles.length; i++){
+        if (particles[i] != null){
+          if (particles[i].getRadius < 0.008){
+            particles[i] = null;
+          }
+          particles[i].draw(canvas)
+        }
+      }
       spheres = spheres.filter(x => x != null);
+      particles = particles.filter(x => x != null);
 
       if (axis[0] || axis[1] || axis[2]) {
         modelViewMatrix = mult(modelViewMatrix, rotate(angle, axis))
@@ -223,5 +282,32 @@ function main() {
     }
 
   }
+
+  function particleSpawn(s, program, gl){
+    var temp = s.getRandomPoint();
+    var x = parseFloat(temp[0])
+    var y = parseFloat(temp[1])
+    var z = parseFloat(temp[2])
+    var sph = new Sphere(x,y,z, 0.025, program, gl);
+    sph.setParticle();
+    sph.setColour(s.getColour());
+    return sph;
+  }
+
+  function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+      this.sound.play();
+    }
+    this.stop = function(){
+      this.sound.pause();
+    }
+  } 
+
   window.onload = main;
-  
+
