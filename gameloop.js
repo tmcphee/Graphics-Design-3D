@@ -5,18 +5,6 @@ function gameloop(sphere, shader, gl) {
             var x = parseFloat(temp[0])
             var y = parseFloat(temp[1])
             var z = parseFloat(temp[2])
-            // if (x < 0)
-            //     x += 0.05
-            // else
-            //     x -= 0.05
-            // if (y < 0)
-            //     y += 0.05
-            // else
-            //     y -= 0.05
-            // if (z < 0)
-            //     z += 0.05
-            // else
-            //     z -= 0.05
         }
             return (new Sphere(x,y,z, 0.05, shader, gl));
     }
